@@ -17,22 +17,26 @@ object adt:
     case Error(ex: Throwable) extends ErrorOr[V]
 
     //The method is used for defining execution pipelines
-    def flatMap [Q](f: V ⇒ ErrorOr[Q]): ErrorOr[Q] =
+    def flatMap[Q](f: V => ErrorOr[Q]): ErrorOr[Q] =
       this match
-        case ErrorOr.Error(ex) ⇒ ErrorOr.Error(ex)
-        case ErrorOr.Or(x)     ⇒ f(x : V)
+        case ErrorOr.Error(ex)  => ErrorOr.Error(ex)
+        case ErrorOr.Or(x)      => try f(x) catch {
+          case ex: Throwable    => ErrorOr.Error(ex)
+        }
 
     //The method is used for changing the internal object
-    def map [Q](f: V ⇒ Q): ErrorOr[Q] =
+    def map[Q](f: V => Q): ErrorOr[Q] =
       this match
-        case ErrorOr.Error(ex)   ⇒ ErrorOr.Error(ex)
-        case ErrorOr.Or(x)       ⇒ ErrorOr.Or(f(x))
+        case ErrorOr.Error(ex) => ErrorOr.Error(ex)
+        case ErrorOr.Or(x)     => try ErrorOr.Or(f(x)) catch {
+          case ex: Throwable   => ErrorOr.Error(ex)
+        }
 
   // Companion object to define constructor
   object ErrorOr:
 
     //Provide a type parameter, an argument and a result type
-    def apply [V](v: => V): ErrorOr[V] =
+    def apply[V](v: => V): ErrorOr[V] =
       try ErrorOr.Or(v) catch {
         case ex: Throwable => ErrorOr.Error(ex)
       }
