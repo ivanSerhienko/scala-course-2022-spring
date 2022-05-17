@@ -50,10 +50,8 @@ object adt:
     //The method is used for applying side effects without returning any result
     def foreach[U](f: V => U): Unit =
       this match 
-        case ErrorOr.Error(ex) => ErrorOr.Error(ex)
-        case ErrorOr.Or(x)     => try f(x) catch {
-        case ex: Throwable   => ErrorOr.Error(ex)
-      }
+        case ErrorOr.Error(ex) => ()
+        case ErrorOr.Or(x)     => f(x)
 
   // Companion object to define constructor
   object ErrorOr:
