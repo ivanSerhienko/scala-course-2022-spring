@@ -35,9 +35,14 @@ object adt:
 
     //The method is used for filtering
     def withFilter(p: V => Boolean): ErrorOr[V] =
-      this match 
+      this match
         case ErrorOr.Error(ex) => ErrorOr.Error(ex)
-        case ErrorOr.Or(x) if p(x) => ErrorOr.Or(x)
+        try {
+          this match
+            case ErrorOr.Or(x) if p(x) => ErrorOr.Or(x)
+        } catch {
+          case ex: Throwable   => ErrorOr.Error(ex)
+    }
 
     //The method is used for getting rid of internal box
     def flatten[U](implicit ev: V <:< ErrorOr[U]): ErrorOr[U] = 
