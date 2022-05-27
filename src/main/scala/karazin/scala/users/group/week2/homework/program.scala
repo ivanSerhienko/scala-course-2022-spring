@@ -1,33 +1,41 @@
 package karazin.scala.users.group.week2.homework
 
 // Do not forget to import custom implementation
+
 import adt._
 import model._
 import services._
 
 object program:
 
-  //I`m really tried :(
-  //Still not work
+
   //Getting view for all user's posts if they exists
   def getPostsViews(): ErrorOr[List[PostView]] =
     for
-      profile    ← getUserProfile()
-      posts      ← getPosts(profile.userId)
-      //           posts map (post => getPostView(post)) flatten (post => posts map (r => getPostView(r)))
-      postsView  ← posts flatten posts map getPostView _
-      //if postsView.length == 42
-    yield postsView
+      profile   ← getUserProfile()
+      posts     ← getPosts(profile.userId)
+      postsView ← ErrorOr(posts map { post => getPostView(post) })
+    yield postsView.foldLeft(List[PostView]()) { (list, i) =>
+      i match
+        case ErrorOr.Or(x)     => x :: list
+        case ErrorOr.Error(ex) => list
+    }
 
   //Print all view for all user's posts if they exists
-  def printPostsViews(): ErrorOr[List[PostView]] = ???
+  def printPostsViews(): ErrorOr[List[PostView]] =
+    for
+      postViews ← getPostsViews()
+    yield
+      print(postViews)
+      postViews
+
 
   //Getting view for a particular user's post
   def getPostView(post: Post) =
     for
-      comments  ← getComments(post.postId)
-      likes     ← getLikes(post.postId)
-      shares    ← getShares(post.postId)
+      comments ← getComments(post.postId)
+      likes    ← getLikes(post.postId)
+      shares   ← getShares(post.postId)
     yield PostView(post, comments, likes, shares)
 
   //Provide desugared version of the previous two methods
@@ -45,7 +53,7 @@ object program:
         }
       }
     } withFilter { postsView ⇒
-      postsView.length == 42
+      postsView.length == 43
     }
 
 
