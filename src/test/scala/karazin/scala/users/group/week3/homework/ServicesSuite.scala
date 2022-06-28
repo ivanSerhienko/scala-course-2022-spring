@@ -1,5 +1,9 @@
 package karazin.scala.users.group.week3.homework
 
+import model._
+import services._
+
+import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -13,10 +17,37 @@ import scala.concurrent.Future
 
 class ServicesSuite extends munit.FunSuite:
   
-  test("failed async test example") {
+  test("getUserProfile async test") {
+    val userId = UUID.randomUUID()
     Future {
-      assertEquals(42, 43)
+      getUserProfile(userId) map { profile => assertEquals(profile.userId, userId) }
     }
   }
 
-  
+  test("getPosts async test") {
+    val userId = UUID.randomUUID()
+    Future {
+      getPosts(userId) map { posts => posts map { post => assertEquals(post.userId, userId) } }
+    }
+  }
+
+  test("getComments async test") {
+    val postId = UUID.randomUUID()
+    Future {
+      getComments(postId) map { comments => comments map { comment => assertEquals(comment.postId, postId) } }
+    }
+  }
+
+  test("getLikes async test") {
+    val postId = UUID.randomUUID()
+    Future {
+      getLikes(postId) map { likes => likes map { like => assertEquals(like.postId, postId) } }
+    }
+  }
+
+  test("getShares async test") {
+    val postId = UUID.randomUUID()
+    Future {
+      getShares(postId) map { shares => shares map { share => assertEquals(share.postId, postId) } }
+    }
+  }

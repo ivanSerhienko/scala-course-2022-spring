@@ -1,7 +1,11 @@
 package karazin.scala.users.group.week3.homework
 
+import model._
+import program._
+import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+
 
 /*
   Write test for all programs in karazin.scala.users.group.week3.homework.program
@@ -13,8 +17,8 @@ import scala.concurrent.Future
 
 class ProgramSuite extends munit.FunSuite:
   
-  test("successful async test example") {
-    Future {
-      assertEquals(42, 42)
-    }
+  test("getPostView test") {
+    val postId = UUID.randomUUID()
+    val userId = UUID.randomUUID()
+    getPostView(Post(userId, postId)) map {postView => assertEquals(postView.post, Post(userId, postId))}
   }
