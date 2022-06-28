@@ -2,18 +2,22 @@ package karazin.scala.users.group.week5.homework
 
 object givens:
   
-  /* 
-    The trait is used for converting instances to a json string representation
-    Provide a type parameter(s) for the trait and the method 
-    and argument(s) and a result type
-  */ 
-  
-  trait DummyType
-  
-  trait JsonStringEncoder:
-    def encode: DummyType
+  trait JsonStringEncoder [T]:
+    def encode (toEncode: T): String
 
-  /* 
-    Make sure that integers, booleans, strings and lists 
-    are convertable to a json string representation 
-  */ 
+  given IntToJson: JsonStringEncoder[Int] with
+    override def encode(toEncode: Int): String = toEncode.toString
+
+  given BoolToJson: JsonStringEncoder[Boolean] with
+    override def encode(toEncode: Boolean): String = toEncode.toString
+
+  given StringToJson: JsonStringEncoder[String] with
+    override def encode(toEncode: String): String = "\"" + toEncode + "\""
+
+  given ListEncoder[T] (using encoder: => JsonStringEncoder[T]): JsonStringEncoder[List[T]] with
+    override def encode(toEncode: List[T]): String = 
+      "[" + toEncode.foldLeft(List[String]()) {(acc, toEncode) => acc :+ encoder.encode(toEncode)}.mkString(", ") + "]"
+
+  object EncodeToJsonRepresentation:
+    def apply[T] (using encoder: => JsonStringEncoder[T]): JsonStringEncoder[T] =
+      encoder

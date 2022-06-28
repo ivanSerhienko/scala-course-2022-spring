@@ -1,6 +1,7 @@
 package karazin.scala.users.group.week5.homework
 
 import scala.concurrent.Future
+import givens._
 
 /*
   Write test for all programs in karazin.scala.users.group.week4.homework.givens
@@ -22,7 +23,24 @@ import scala.concurrent.Future
     
  */
 class GivensSuite extends munit.FunSuite:
-  
-  test("successful test example") {
-    assertEquals(42, 42)
+
+  test("Int test") {
+    assertEquals(EncodeToJsonRepresentation[Int] encode 0, "0")
+  }
+
+  test("Bool test") {
+    assertEquals(EncodeToJsonRepresentation[Boolean] encode false, "false")
+  }
+
+  test("String test") {
+    assertEquals(EncodeToJsonRepresentation[String] encode "Egg", "\"Egg\"")
+  }
+
+  test("List[Int] test") {
+    assertEquals(EncodeToJsonRepresentation[List[Int]] encode 0 :: -2 :: 3 :: Nil, "[0, -2, 3]")
+  }
+
+
+  test("List[String] test") {
+    assertEquals(EncodeToJsonRepresentation[List[String]] encode "I" :: "believe" :: "I" :: Nil, "[\"I\", \"believe\", \"I\"]")
   }
