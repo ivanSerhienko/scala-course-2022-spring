@@ -14,9 +14,9 @@ object givens:
   given StringToJson: JsonStringEncoder[String] with
     override def encode(toEncode: String): String = "\"" + toEncode + "\""
 
-  given ListEncoder[T] (using encoder: => JsonStringEncoder[T]): JsonStringEncoder[List[T]] with
-    override def encode(toEncode: List[T]): String = 
-      "[" + toEncode.foldLeft(List[String]()) {(acc, toEncode) => acc :+ encoder.encode(toEncode)}.mkString(", ") + "]"
+  given ListToJson[T] (using encoder: => JsonStringEncoder[T]): JsonStringEncoder[List[T]] with
+    override def encode(toEncode: List[T]): String =
+      toEncode.map(x => encoder.encode(x)).mkString("[",", ","]")
 
   object EncodeToJsonRepresentation:
     def apply[T] (using encoder: => JsonStringEncoder[T]): JsonStringEncoder[T] =

@@ -22,7 +22,7 @@ import givens._
   NB: Do not use sync, this homework does not belong async stuff
     
  */
-class GivensSuite extends munit.FunSuite:
+class GivensSuite extends munit.FunSuite :
 
   test("Int test") {
     assertEquals(EncodeToJsonRepresentation[Int] encode 0, "0")
@@ -40,7 +40,14 @@ class GivensSuite extends munit.FunSuite:
     assertEquals(EncodeToJsonRepresentation[List[Int]] encode 0 :: -2 :: 3 :: Nil, "[0, -2, 3]")
   }
 
-
   test("List[String] test") {
     assertEquals(EncodeToJsonRepresentation[List[String]] encode "I" :: "believe" :: "I" :: Nil, "[\"I\", \"believe\", \"I\"]")
+  }
+
+  test("List[Boolean] test") {
+    assertEquals(EncodeToJsonRepresentation[List[Boolean]] encode false :: true :: false :: Nil, "[false, true, false]")
+  }
+
+  test("Json Map") {
+    compileErrors(EncodeToJsonRepresentation[Map[String, Int]] encode Map("1" -> 1, "2" -> 2, "3" -> 3))
   }
